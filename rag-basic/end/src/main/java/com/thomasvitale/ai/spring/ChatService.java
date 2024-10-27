@@ -1,14 +1,21 @@
 package com.thomasvitale.ai.spring;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-class ChatService {
+public class ChatService {
+
+    private final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
     private final ChatClient chatClient;
     private final VectorStore vectorStore;
@@ -19,12 +26,10 @@ class ChatService {
     }
 
     ChatResponse chat(String query) {
+        logger.info("Chatting with AI");
         return chatClient.prompt()
-                .advisors(new QuestionAnswerAdvisor(vectorStore, SearchRequest.defaults()
-                    //.withFilterExpression("location == 'North Pole'")
-                    //.withSimilarityThreshold(0.25)
-                    //.withTopK(3)
-                ))
+                .advisors(new QuestionAnswerAdvisor(vectorStore, SearchRequest.defaults().withTopK(5)))
+                .advisors(new SafeGuardAdvisor(List.of("avada kedavra")))
                 .user(query)
                 .call()
                 .chatResponse();

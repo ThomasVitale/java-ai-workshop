@@ -1,6 +1,12 @@
 spring:
+  main:
+    web-application-type: none
   ai:
     ollama:
+      init:
+        pull-model-strategy: when_missing
+        chat:
+          include: false
       embedding:
         options:
           model: nomic-embed-text

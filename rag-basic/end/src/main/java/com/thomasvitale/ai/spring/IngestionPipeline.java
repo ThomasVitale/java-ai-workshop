@@ -4,10 +4,9 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.reader.ExtractedTextFormatter;
 import org.springframework.ai.reader.TextReader;
-import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
-import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
+import org.springframework.ai.reader.markdown.MarkdownDocumentReader;
+import org.springframework.ai.reader.markdown.config.MarkdownDocumentReaderConfig;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,41 +21,37 @@ import java.util.List;
 public class IngestionPipeline {
 
     private static final Logger logger = LoggerFactory.getLogger(IngestionPipeline.class);
+
     private final VectorStore vectorStore;
 
-    @Value("classpath:documents/story1.md")
+    @Value("classpath:documents/story1.txt")
     Resource file1;
 
-    @Value("classpath:documents/story2.pdf")
+    @Value("classpath:documents/story2.md")
     Resource file2;
 
-    public IngestionPipeline(VectorStore vectorStore) {
+    IngestionPipeline(VectorStore vectorStore) {
         this.vectorStore = vectorStore;
     }
 
     @PostConstruct
-    public void run() {
+    void run() {
         List<Document> documents = new ArrayList<>();
 
-        logger.info("Loading .md files as Documents");
+        logger.info("Loading .txt files as Documents");
         var textReader = new TextReader(file1);
         textReader.getCustomMetadata().put("location", "North Pole");
         textReader.setCharset(Charset.defaultCharset());
         documents.addAll(textReader.get());
 
-        logger.info("Loading .pdf files as Documents");
-        var pdfReader = new PagePdfDocumentReader(file2, PdfDocumentReaderConfig.builder()
-                .withPageExtractedTextFormatter(ExtractedTextFormatter.builder()
-                        .withNumberOfTopPagesToSkipBeforeDelete(0)
-                        .withNumberOfBottomTextLinesToDelete(1)
-                        .withNumberOfTopTextLinesToDelete(1)
-                        .build())
-                .withPagesPerDocument(1)
+        logger.info("Loading .md files as Documents");
+        var markdownReader = new MarkdownDocumentReader(file2, MarkdownDocumentReaderConfig.builder()
+                .withAdditionalMetadata("location", "Italy")
                 .build());
-        documents.addAll(pdfReader.get());
+        documents.addAll(markdownReader.get());
 
         logger.info("Split Documents to better fit the LLM context window");
-        var textSplitter = new TokenTextSplitter();
+        var textSplitter = TokenTextSplitter.builder().build();
         var transformedDocuments = textSplitter.apply(documents);
 
         logger.info("Creating and storing Embeddings from Documents");

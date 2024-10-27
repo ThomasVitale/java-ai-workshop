@@ -1,7 +1,3 @@
 spring:
-  ai:
-    vectorstore:
-      pgvector:
-        initialize-schema: true
-        dimensions: 768
-        index-type: hnsw
+  main:
+    web-application-type: none

@@ -22,3 +22,8 @@ Mistral AI, OpenAI, Anthropic, Groq, and Hugging Face.
 * Familiarity with Java and core Spring Boot.
 * Laptop with a Java IDE and Docker Desktop/Podman Desktop installed.
 * A GitHub personal account.
+
+## Additional Resources
+
+* [Spring AI Documentation](https://spring.io/projects/spring-ai)
+* [Spring AI Examples](https://github.com/ThomasVitale/llm-apps-java-spring-ai)

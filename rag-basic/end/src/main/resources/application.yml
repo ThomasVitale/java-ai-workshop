@@ -1,6 +1,10 @@
 spring:
   application:
     name: demo
+  http:
+    client:
+      connect-timeout: 60s
+      read-timeout: 60s
 
   ai:
     chat:
@@ -11,11 +15,15 @@ spring:
         include-completion: true
         include-prompt: true
     ollama:
+      init:
+        pull-model-strategy: when_missing
+        chat:
+          additional-models:
+            - bespoke-minicheck
       chat:
         options:
           model: qwen2.5
-          num-ctx: 4096
-          temperature: 0.7
+          temperature: 0.0
       embedding:
         options:
           model: nomic-embed-text
@@ -39,5 +47,7 @@ management:
     sampling:
       probability: 1.0
   otlp:
+    logging:
+      endpoint: "http://localhost:4318/v1/logs"
     tracing:
-      endpoint: http://localhost:4318/v1/traces
+      endpoint: "http://localhost:4318/v1/traces"

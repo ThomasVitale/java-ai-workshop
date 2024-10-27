@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class BookService {
+class BookService {
 
     private static final Map<Integer,Book> books = new ConcurrentHashMap<>();
 
@@ -19,13 +19,13 @@ public class BookService {
         books.put(5, new Book("The Silmarillion", "J.R.R. Tolkien"));
     }
 
-    public List<Book> getBooksByAuthor(Author author) {
+    List<Book> getBooksByAuthor(Author author) {
         return books.values().stream()
                 .filter(book -> author.name().equals(book.author()))
                 .toList();
     }
 
-    public record Book(String title, String author) {}
-    public record Author(String name) {}
+    record Book(String title, String author) {}
+    record Author(String name) {}
 
 }

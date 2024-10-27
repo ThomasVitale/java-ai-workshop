@@ -1,6 +1,10 @@
 spring:
   application:
     name: demo
+  http:
+    client:
+      connect-timeout: 60s
+      read-timeout: 60s
 
 management:
   endpoints:
@@ -14,5 +18,7 @@ management:
     sampling:
       probability: 1.0
   otlp:
+    logging:
+      endpoint: "http://localhost:4318/v1/logs"
     tracing:
-      endpoint: http://localhost:4318/v1/traces
+      endpoint: "http://localhost:4318/v1/traces"
