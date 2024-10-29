@@ -83,8 +83,8 @@ spring:
     ollama:
       init:
         pull-model-strategy: when_missing
-      embedding:
-        include: false
+        embedding:
+          include: false
       chat:
         options:
           model: llama3.2
