@@ -84,7 +84,7 @@ spring:
       init:
         pull-model-strategy: when_missing
       embedding:
-          include: false
+        include: false
       chat:
         options:
           model: llama3.2
